@@ -1,0 +1,81 @@
+>>>>>>>>>>>>>> Field Extraction <<<<<<<<<<<<<<<<<<
+1) Index Time Field Extraction ( HF )
+2) Search Time Field Extraction ( IDX , SH ) 
+ >>>> Interactive Field Extractor ( IFX )
+ >>>> REGEX ( | rex )
+ 
+ index=abc sourcetype=xyz 
+ 
+ 
+This                                                       is Ayan and he is from India and logging in from 198.78.89.90
+ 
+This    is Kamal and he is from USA ?
+ 
+he is                     Rajesh and he is from Canada [
+
+jhskhfhasklfhfkjhaskfhklfhklsfjlkasjflksjfkjaslkfjsajflkjflksjf is ranju  and he is from Canada [
+ 
+
+index=abc sourcetype=xyz  | rex field=_raw "\w+\s+\w+\s+(?<Name>\w+)\s+\w+.*"
+
+
+
+------------------------------------------------------------------------------------ 
+ 
+PCRE
+
+\w - word / character
+\s - space 
+\d - digit
+? - 0 or 1 occurances
++ - 1 or more occurances
+.* - Everything 
+
+\D - Non-digit
+\W - Non-character
+\S - Non-Space  
+
+------------------------
+\.
+\?
+\[
+\+
+\@
+\# 
+
+index=_internal sourcetype=splunkd_ui_access | rex field=_raw ".*\s+\"\-\"\s+\"(?<Web_Browser>\w+\/\d+\.\d+)\s+\(.*"
+
+
+this is ayan and he is from kolkata 
+
+ ..... | rex field=_raw "\w+\s+\w+\s+(?<Name>\w+)"
+ 
+ ...... | rex field=_raw ".*\s+(?<Location>\w+)"
+ 
+
+
+........ | rex field=_raw "\w+\s+\w+\s+(?<Name>\w+).*\s+(?<Location>\w+)"
+
+
+index=_internal sourcetype=splunkd_ui_access | rex field=_raw "(?<Aip>\d+\.\d+\.\d+\.\d+)\s+\-\s+(?<Auser>\w+)\s+\[.*\s+(?<Atransaction>\w+)\s+(?<Aresponse>\d+)\w+"
+
+
+192.168.79.110 - student4 [13/Jun/2021:23:31:49.605 +0530] "GET /en-US/splunkd/__raw/servicesNS/student4/search/search/jobs/rt_md_1623607272.5203/results_preview?output_mode=json&count=1&search=%7C+stats+sum(totalCount)+as+cnt%2C+min(firstTime)+as+min%2C+max(lastTime)+as+max&_=1623607272042 HTTP/1.1" 200 214 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36" - 2a8dd93a3931c8b846db6159e0527944 5ms
+
+
+\
+
+\\\
+
+
+index=_internal sourcetype=splunkd_ui_access | rex field=_raw ".*\s+\"\-\"\s+\"(?<Web_Browser>\w+\/\d+\.\d+)\s+\(.*"
+
+
+192.168.79.110 - trainer [13/Jun/2021:23:41:02.328 +0530] "GET /en-US/splunkd/__raw/services/server/health/splunkd?output_mode=json&_=1623607000654 HTTP/1.1" 200 869 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36" - a48df71b71fec2f39344b0897b8634ea 1ms
+
+
+index=_internal sourcetype=splunkd_ui_access | rex field=_raw  "(\s+|\")(?<Web_Browser>\D+\/\d+.*?)(\"|\s+)"
+
+index=_internal sourcetype=splunkd_ui_access 
+| rex field=_raw max_match=100 "(\s+|\"\-\"\s+\")(?<Web_Browser>[^HTTP]\w+\/\d+.\d+.*?)(\s+|\"\s+\-)" 
+| table Web_Browser
